@@ -1,0 +1,5 @@
+{
+  "name": "Aether Research: Autonomous AI Agent",
+  "description": "An advanced autonomous research agent that decomposes complex topics, performs multi-source web searches using Google Grounding, and synthesizes structured academic reports with confidence scoring and citations.",
+  "requestFramePermissions": []
+}
