@@ -1,28 +1,47 @@
 
 import React, { useState, useEffect } from 'react';
 import LoginPage from './components/LoginPage';
+import LogoutPage from './components/LogoutPage';
 import ResearchDashboard from './components/ResearchDashboard';
 import { UserSession } from './types';
 import { SESSION_KEY } from './constants';
 
 const App: React.FC = () => {
   const [session, setSession] = useState<UserSession | null>(null);
+  const [isLoggedOut, setIsLoggedOut] = useState(false);
 
   useEffect(() => {
     const saved = localStorage.getItem(SESSION_KEY);
-    if (saved) setSession(JSON.parse(saved));
+    if (saved) {
+      try {
+        setSession(JSON.parse(saved));
+      } catch (e) {
+        console.error("Failed to parse session", e);
+        localStorage.removeItem(SESSION_KEY);
+      }
+    }
   }, []);
 
   const handleLogin = (username: string) => {
     const newSession = { isAuthenticated: true, username };
     setSession(newSession);
+    setIsLoggedOut(false);
     localStorage.setItem(SESSION_KEY, JSON.stringify(newSession));
   };
 
   const handleLogout = () => {
     setSession(null);
+    setIsLoggedOut(true);
     localStorage.removeItem(SESSION_KEY);
   };
+
+  const handleBackToLogin = () => {
+    setIsLoggedOut(false);
+  };
+
+  if (isLoggedOut) {
+    return <LogoutPage onBackToLogin={handleBackToLogin} />;
+  }
 
   if (!session?.isAuthenticated) {
     return <LoginPage onLogin={handleLogin} />;
